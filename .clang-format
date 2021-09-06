@@ -1,0 +1,31 @@
+# clang-format configuration applied to all source files in this project.
+# Requires clang-format version 10.0.0 or newer.
+---
+Language: Cpp
+BasedOnStyle:  Llvm
+AlignConsecutiveMacros:  AcrossComments
+AlignAfterOpenBracket: AlwaysBreak
+
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortLambdasOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: Never
+
+BinPackArguments: false
+BinPackParameters: false
+
+BreakBeforeBraces: Linux
+BreakStringLiterals: true
+
+ColumnLimit:     100
+ContinuationIndentWidth: 4
+DerivePointerAlignment: true
+IndentCaseLabels: false
+IndentWidth:     4
+IndentWrappedFunctionNames: false
+MaxEmptyLinesToKeep: 1
+PointerAlignment: Left
+ReflowComments:  true
+SortIncludes:    true
+TabWidth:        4
+UseTab:          Never
+...
