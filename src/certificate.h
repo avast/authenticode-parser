@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include "helper.h"
 #include <openssl/x509.h>
+#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,8 +57,8 @@ typedef struct {
     ByteArray sha256;
     char* key_alg;
     char* sig_alg;
-    char* not_before;
-    char* not_after;
+    time_t not_before;
+    time_t not_after;
     char* key;
     Attributes issuer_attrs;
     Attributes subject_attrs;

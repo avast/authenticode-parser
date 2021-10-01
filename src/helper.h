@@ -22,10 +22,10 @@ SOFTWARE.
 #ifndef HELPER_H
 #define HELPER_H
 
-#include <stdint.h>
 #include <openssl/x509.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -40,8 +40,8 @@ void print_certificate(Certificate *cert, char *indent)
     printf("%sSubject             : %s\n", indent, cert->subject);
     printf("%sIssuer              : %s\n", indent, cert->issuer);
     printf("%sSerial              : %s\n", indent, cert->serial);
-    printf("%sNot After           : %s\n", indent, cert->not_after);
-    printf("%sNot Before          : %s\n", indent, cert->not_before);
+    printf("%sNot After           : %lu\n", indent, cert->not_after);
+    printf("%sNot Before          : %lu\n", indent, cert->not_before);
     printf("%sSHA1                : ", indent); print_bytes(&cert->sha1);
     printf("%sSHA256              : ", indent); print_bytes(&cert->sha256);
     printf("%sKey Algorithm       : %s\n", indent, cert->key_alg);

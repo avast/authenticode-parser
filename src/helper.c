@@ -21,12 +21,12 @@ SOFTWARE.
 
 #include "helper.h"
 
-#include <stdint.h>
 #include <openssl/bio.h>
 #include <openssl/x509_vfy.h>
+#include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Creates copy of data into the array */
 int byte_array_init(ByteArray* arr, const uint8_t* data, int len)

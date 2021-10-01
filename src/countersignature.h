@@ -35,7 +35,7 @@ extern "C" {
 #endif
 
 /* Countersignature is valid */
-#define COUNTERSIGNATURE_VFY_VALID                     0
+#define COUNTERSIGNATURE_VFY_VALID                  0
 /* Parsing error (from OpenSSL functions) */
 #define COUNTERSIGNATURE_VFY_CANT_PARSE             1
 /* Signers certificate is missing */
@@ -51,7 +51,7 @@ extern "C" {
 /* Message digest inside countersignature doesn't match signature it countersigns */
 #define COUNTERSIGNATURE_VFY_DOESNT_MATCH_SIGNATURE 7
 /* Non verification errors - allocations etc. */
-#define COUNTERSIGNATURE_VFY_INTERNAL_ERROR             8
+#define COUNTERSIGNATURE_VFY_INTERNAL_ERROR         8
 /* Time is missing in the timestamp signature */
 #define COUNTERSIGNATURE_VFY_TIME_MISSING           9
 
