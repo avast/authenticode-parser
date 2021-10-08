@@ -22,7 +22,7 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../src/authenticode.h"
+#include "../include/authenticode.h"
 
 void print_bytes(ByteArray *bytes)
 {
@@ -42,8 +42,10 @@ void print_certificate(Certificate *cert, char *indent)
     printf("%sSerial              : %s\n", indent, cert->serial);
     printf("%sNot After           : %lu\n", indent, cert->not_after);
     printf("%sNot Before          : %lu\n", indent, cert->not_before);
-    printf("%sSHA1                : ", indent); print_bytes(&cert->sha1);
-    printf("%sSHA256              : ", indent); print_bytes(&cert->sha256);
+    printf("%sSHA1                : ", indent);
+    print_bytes(&cert->sha1);
+    printf("%sSHA256              : ", indent);
+    print_bytes(&cert->sha256);
     printf("%sKey Algorithm       : %s\n", indent, cert->key_alg);
     printf("%sSignature Algorithm : %s\n", indent, cert->sig_alg);
     printf("%sPublic key          : %s\n", indent, cert->key);
@@ -55,7 +57,8 @@ void print_authenticode(Authenticode *auth)
     printf("%sPKCS7 Signature:\n", indent);
     indent = "      ";
     printf("%sVersion           : %d\n", indent, auth->version);
-    printf("%sDigest            : ", indent); print_bytes(&auth->digest);
+    printf("%sDigest            : ", indent);
+    print_bytes(&auth->digest);
     printf("%sDigest Algorithm  : %s\n", indent, auth->digest_alg);
     printf("%sVerify flags      : %d\n", indent, auth->verify_flags);
     printf("%sCertificate count : %ld\n", indent, auth->certs->count);
@@ -72,7 +75,8 @@ void print_authenticode(Authenticode *auth)
     if (auth->signer) {
         printf("%sSigner Info:\n", indent);
         char *indent = "        ";
-        printf("%sDigest       : ", indent); print_bytes(&auth->signer->digest);
+        printf("%sDigest       : ", indent);
+        print_bytes(&auth->signer->digest);
         printf("%sDigest Algo  : %s\n", indent, auth->signer->digest_alg);
         printf("%sProgram name : %s\n", indent, auth->signer->program_name);
         if (auth->signer->chain) {
@@ -93,7 +97,8 @@ void print_authenticode(Authenticode *auth)
             Countersignature *counter = auth->countersigs->counters[i];
             printf("%sCountersignature:\n", indent);
             char *indent = "        ";
-            printf("%sDigest           : ", indent); print_bytes(&counter->digest);
+            printf("%sDigest           : ", indent);
+            print_bytes(&counter->digest);
             printf("%sDigest Algorithm : %s\n", indent, counter->digest_alg);
             printf("%sSigning Time     : %s\n", indent, counter->sign_time);
             printf("%sVerify flags     : %d\n", indent, counter->verify_flags);

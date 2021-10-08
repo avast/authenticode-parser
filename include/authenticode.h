@@ -19,21 +19,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef AUTHENTICODE_H
-#define AUTHENTICODE_H
+#ifndef AUTHENTICODE_PARSER_AUTHENTICODE_H
+#define AUTHENTICODE_PARSER_AUTHENTICODE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
-
-#include "certificate.h"
-#include "countersignature.h"
-
-#define MAX_NESTED_COUNT 16
+#include <time.h>
 
 /* Signature is valid */
 #define AUTHENTICODE_VFY_VALID            0
@@ -53,6 +47,84 @@ extern "C" {
 #define AUTHENTICODE_VFY_BAD_CONTENT      7
 /* Contained and calculated digest don't match */
 #define AUTHENTICODE_VFY_INVALID          8
+
+/* Countersignature is valid */
+#define COUNTERSIGNATURE_VFY_VALID                  0
+/* Parsing error (from OpenSSL functions) */
+#define COUNTERSIGNATURE_VFY_CANT_PARSE             1
+/* Signers certificate is missing */
+#define COUNTERSIGNATURE_VFY_NO_SIGNER_CERT         2
+/* Unknown algorithm, can't proceed with verification */
+#define COUNTERSIGNATURE_VFY_UNKNOWN_ALGORITHM      3
+/* Verification failed, digest mismatch */
+#define COUNTERSIGNATURE_VFY_INVALID                4
+/* Failed to decrypt countersignature enc_digest for verification */
+#define COUNTERSIGNATURE_VFY_CANT_DECRYPT_DIGEST    5
+/* No digest saved inside the countersignature */
+#define COUNTERSIGNATURE_VFY_DIGEST_MISSING         6
+/* Message digest inside countersignature doesn't match signature it countersigns */
+#define COUNTERSIGNATURE_VFY_DOESNT_MATCH_SIGNATURE 7
+/* Non verification errors - allocations etc. */
+#define COUNTERSIGNATURE_VFY_INTERNAL_ERROR         8
+/* Time is missing in the timestamp signature */
+#define COUNTERSIGNATURE_VFY_TIME_MISSING           9
+
+typedef struct {
+    uint8_t* data;
+    int len;
+} ByteArray;
+
+typedef struct {
+    ByteArray country;
+    ByteArray organization;
+    ByteArray organizationalUnit;
+    ByteArray nameQualifier;
+    ByteArray state;
+    ByteArray commonName;
+    ByteArray serialNumber;
+    ByteArray locality;
+    ByteArray title;
+    ByteArray surname;
+    ByteArray givenName;
+    ByteArray initials;
+    ByteArray pseudonym;
+    ByteArray generationQualifier;
+    ByteArray emailAddress;
+} Attributes;
+
+typedef struct {
+    long version;
+    char* issuer;
+    char* subject;
+    char* serial;
+    ByteArray sha1;
+    ByteArray sha256;
+    char* key_alg;
+    char* sig_alg;
+    time_t not_before;
+    time_t not_after;
+    char* key;
+    Attributes issuer_attrs;
+    Attributes subject_attrs;
+} Certificate;
+
+typedef struct {
+    Certificate** certs;
+    size_t count;
+} CertificateArray;
+
+typedef struct {
+    int verify_flags;
+    char* sign_time;
+    char* digest_alg;
+    ByteArray digest;
+    CertificateArray* chain;
+} Countersignature;
+
+typedef struct {
+    Countersignature** counters;
+    size_t count;
+} CountersignatureArray;
 
 typedef struct {
     ByteArray digest;

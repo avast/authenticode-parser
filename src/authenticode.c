@@ -19,7 +19,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "authenticode.h"
+#include "../include/authenticode.h"
 
 #include <openssl/asn1.h>
 #include <openssl/evp.h>
@@ -38,6 +38,8 @@ SOFTWARE.
 #include "countersignature.h"
 #include "helper.h"
 #include "structs.h"
+
+#define MAX_NESTED_COUNT 16
 
 /* Moves signatures from src to dst, returns 0 on success,
  * else 1. If error occurs, arguments are unchanged */

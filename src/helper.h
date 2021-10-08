@@ -19,9 +19,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef HELPER_H
-#define HELPER_H
+#ifndef AUTHENTICODE_PARSER_HELPER_H
+#define AUTHENTICODE_PARSER_HELPER_H
 
+#include "../include/authenticode.h"
 #include <openssl/x509.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -30,11 +31,6 @@ SOFTWARE.
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct {
-    uint8_t* data;
-    int len;
-} ByteArray;
 
 int byte_array_init(ByteArray* arr, const uint8_t* data, int len);
 char* parse_time(const ASN1_TIME* time);
