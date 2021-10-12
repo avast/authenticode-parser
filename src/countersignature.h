@@ -22,14 +22,14 @@ SOFTWARE.
 #ifndef AUTHENTICODE_PARSER_COUNTERSIGNATURE_H
 #define AUTHENTICODE_PARSER_COUNTERSIGNATURE_H
 
-#include <openssl/safestack.h>
-#include <openssl/x509.h>
-
-#include "../include/authenticode.h"
 #include "certificate.h"
 #include "helper.h"
+#include <authenticode-parser/authenticode.h>
 #include <stdbool.h>
 #include <stdint.h>
+
+#include <openssl/safestack.h>
+#include <openssl/x509.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,7 +40,9 @@ Countersignature* pkcs9_countersig_new(
 Countersignature* ms_countersig_new(const uint8_t* data, long size, ASN1_STRING* enc_digest);
 
 int countersignature_array_insert(CountersignatureArray* arr, Countersignature* sig);
-int countersignature_array_move(CountersignatureArray* src, CountersignatureArray* dst);
+/* Moves all countersignatures of src and inserts them into dst */
+int countersignature_array_move(CountersignatureArray* dst, CountersignatureArray* src);
+
 void countersignature_free(Countersignature* sig);
 void countersignature_array_free(CountersignatureArray* arr);
 

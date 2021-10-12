@@ -30,46 +30,6 @@ SOFTWARE.
 
 #include "helper.h"
 
-/* Taken from http://stackoverflow.com/questions/10975542/asn1-time-conversion
- and cleaned up. Also uses timegm(3) instead of mktime(3). */
-time_t ASN1_get_time_t(const ASN1_TIME* time)
-{
-    struct tm t = {0};
-    if (!time)
-        return timegm(&t);
-
-    const char* str = (const char*)time->data;
-    size_t i = 0;
-
-    if (time->type == V_ASN1_UTCTIME) { /* two digit year */
-        t.tm_year = (str[i++] - '0') * 10;
-        t.tm_year += (str[i++] - '0');
-
-        if (t.tm_year < 70)
-            t.tm_year += 100;
-    } else if (time->type == V_ASN1_GENERALIZEDTIME) { /* four digit year */
-        t.tm_year = (str[i++] - '0') * 1000;
-        t.tm_year += (str[i++] - '0') * 100;
-        t.tm_year += (str[i++] - '0') * 10;
-        t.tm_year += (str[i++] - '0');
-        t.tm_year -= 1900;
-    }
-
-    t.tm_mon = (str[i++] - '0') * 10;
-    t.tm_mon += (str[i++] - '0') - 1; // -1 since January is 0 not 1.
-    t.tm_mday = (str[i++] - '0') * 10;
-    t.tm_mday += (str[i++] - '0');
-    t.tm_hour = (str[i++] - '0') * 10;
-    t.tm_hour += (str[i++] - '0');
-    t.tm_min = (str[i++] - '0') * 10;
-    t.tm_min += (str[i++] - '0');
-    t.tm_sec = (str[i++] - '0') * 10;
-    t.tm_sec += (str[i++] - '0');
-
-    /* Note: we did not adjust the time based on time zone information */
-    return timegm(&t);
-}
-
 static void parse_name_attributes(X509_NAME* raw, Attributes* attr)
 {
     if (!raw || !attr)
@@ -320,8 +280,8 @@ Certificate* certificate_new(X509* x509)
 
     result->version = X509_get_version(x509);
     result->serial = integer_to_serial(X509_get_serialNumber(x509));
-    result->not_after = ASN1_get_time_t(X509_get0_notAfter(x509));
-    result->not_before = ASN1_get_time_t(X509_get0_notBefore(x509));
+    result->not_after = ASN1_TIME_to_time_t(X509_get0_notAfter(x509));
+    result->not_before = ASN1_TIME_to_time_t(X509_get0_notBefore(x509));
     result->sig_alg = strdup(OBJ_nid2ln(X509_get_signature_nid(x509)));
 
     EVP_PKEY* pkey = X509_get0_pubkey(x509);

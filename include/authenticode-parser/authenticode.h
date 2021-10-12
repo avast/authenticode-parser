@@ -74,7 +74,7 @@ typedef struct {
     int len;
 } ByteArray;
 
-typedef struct { /* Various X509 attributes parsed out */
+typedef struct { /* Various X509 attributes parsed out in raw bytes*/
     ByteArray country;
     ByteArray organization;
     ByteArray organizationalUnit;
@@ -115,7 +115,7 @@ typedef struct {
 
 typedef struct {
     int verify_flags;        /* COUNTERISGNATURE_VFY_ flag */
-    char* sign_time;         /* Signing time of the timestamp countersignature */
+    time_t sign_time;        /* Signing time of the timestamp countersignature */
     char* digest_alg;        /* Name of the digest algorithm used */
     ByteArray digest;        /* Stored message digest */
     CertificateArray* chain; /* Certificate chain of the signer */
