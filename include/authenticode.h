@@ -74,7 +74,7 @@ typedef struct {
     int len;
 } ByteArray;
 
-typedef struct {
+typedef struct { /* Various X509 attributes parsed out */
     ByteArray country;
     ByteArray organization;
     ByteArray organizationalUnit;
@@ -93,19 +93,19 @@ typedef struct {
 } Attributes;
 
 typedef struct {
-    long version;
-    char* issuer;
-    char* subject;
-    char* serial;
-    ByteArray sha1;
-    ByteArray sha256;
-    char* key_alg;
-    char* sig_alg;
-    time_t not_before;
-    time_t not_after;
-    char* key;
-    Attributes issuer_attrs;
-    Attributes subject_attrs;
+    long version;             /* Raw version of X509 */
+    char* issuer;             /* Oneline name of Issuer */
+    char* subject;            /* Oneline name of Subject */
+    char* serial;             /* Serial number in format 00:01:02:03:04... */
+    ByteArray sha1;           /* SHA1 of the DER representation of the cert */
+    ByteArray sha256;         /* SHA256 of the DER representation of the cert */
+    char* key_alg;            /* Name of the key algorithm */
+    char* sig_alg;            /* Name of the signature algorithm */
+    time_t not_before;        /* NotBefore validity */
+    time_t not_after;         /* NotAfter validity */
+    char* key;                /* PEM encoded public key */
+    Attributes issuer_attrs;  /* Parsed X509 Attributes of Issuer */
+    Attributes subject_attrs; /* Parsed X509 Attributes of Subject */
 } Certificate;
 
 typedef struct {
@@ -114,11 +114,11 @@ typedef struct {
 } CertificateArray;
 
 typedef struct {
-    int verify_flags;
-    char* sign_time;
-    char* digest_alg;
-    ByteArray digest;
-    CertificateArray* chain;
+    int verify_flags;        /* COUNTERISGNATURE_VFY_ flag */
+    char* sign_time;         /* Signing time of the timestamp countersignature */
+    char* digest_alg;        /* Name of the digest algorithm used */
+    ByteArray digest;        /* Stored message digest */
+    CertificateArray* chain; /* Certificate chain of the signer */
 } Countersignature;
 
 typedef struct {
@@ -126,21 +126,22 @@ typedef struct {
     size_t count;
 } CountersignatureArray;
 
-typedef struct {
-    ByteArray digest;
-    char* digest_alg; /* name of the digest algorithm */
-    char* program_name;
-    CertificateArray* chain;
+typedef struct {             /* Represents SignerInfo structure */
+    ByteArray digest;        /* Message Digest of the SignerInfo */
+    char* digest_alg;        /* name of the digest algorithm */
+    char* program_name;      /* Program name stored in SpcOpusInfo structure of Authenticode */
+    CertificateArray* chain; /* Certificate chain of the signer */
 } Signer;
 
 typedef struct {
-    int verify_flags;
-    int version;
-    char* digest_alg; /* name of the digest algorithm */
-    ByteArray digest;
-    Signer* signer;
-    CertificateArray* certs;
-    CountersignatureArray* countersigs;
+    int verify_flags;        /* AUTHENTICODE_VFY_ flag */
+    int version;             /* Raw PKCS7 version */
+    char* digest_alg;        /* name of the digest algorithm */
+    ByteArray digest;        /* File Digest stored in the Signature */
+    Signer* signer;          /* SignerInfo information of the Authenticode */
+    CertificateArray* certs; /* All certificates in the Signature including the ones in timestamp
+                                countersignatures */
+    CountersignatureArray* countersigs; /* Array of timestamp countersignatures */
 } Authenticode;
 
 typedef struct {
@@ -148,7 +149,24 @@ typedef struct {
     size_t count;
 } AuthenticodeArray;
 
+/**
+ * @brief Constructs AuthenticodeArray from binary data containing Authenticode
+ *        signature. Authenticode can contains nested Authenticode signatures
+ *        as its unsigned attribute, which can also contain nested signatures.
+ *        For this reason the function return an Array of parsed Authenticode signatures.
+ *        Any field of the parsed out structures can be NULL, depending on the input data.
+ *
+ * @param data Binary data containing Authenticode signature
+ * @param len
+ * @return AuthenticodeArray*
+ */
 AuthenticodeArray* authenticode_new(const uint8_t* data, long len);
+
+/**
+ * @brief Deallocates AuthenticodeArray and all it's allocated members
+ *
+ * @param auth
+ */
 void authenticode_array_free(AuthenticodeArray* auth);
 
 #ifdef __cplusplus
