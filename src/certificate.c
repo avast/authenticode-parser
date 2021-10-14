@@ -193,7 +193,7 @@ static char* integer_to_serial(ASN1_INTEGER* serial)
                 snprintf(res + 3 * i, 3, "%02x", serial_bytes[i]);
         }
     }
-    OPENSSL_free(serial_der);
+    free(serial_der);
 
     return (char*)res;
 }

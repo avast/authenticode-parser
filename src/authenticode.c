@@ -32,7 +32,7 @@ SOFTWARE.
 #include <stdlib.h>
 #include <string.h>
 
-#include "authenticode-parser/authenticode.h"
+#include <authenticode-parser/authenticode.h>
 
 #include "certificate.h"
 #include "countersignature.h"
