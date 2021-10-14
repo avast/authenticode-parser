@@ -25,7 +25,8 @@ jobs:
     
     - name: Install OpenSSL on MacOS
       if: matrix.os == 'macos-latest'
-      run: brew install openssl
+      # We want 1.1.1 version max as the 3.0 is default on MacOS otherwise
+      run: brew install openssl@1.1
     
     - name: Install OpenSSL on Windows
       if: matrix.os == 'windows-latest'
