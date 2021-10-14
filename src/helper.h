@@ -19,26 +19,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef HELPER_H
-#define HELPER_H
+#ifndef AUTHENTICODE_PARSER_HELPER_H
+#define AUTHENTICODE_PARSER_HELPER_H
 
-#include <openssl/x509.h>
+#include <authenticode-parser/authenticode.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#include <openssl/x509.h>
+
+#ifdef _WIN32
+#define timegm _mkgmtime
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct {
-    uint8_t* data;
-    int len;
-} ByteArray;
-
-int byte_array_init(ByteArray* arr, const uint8_t* data, int len);
-char* parse_time(const ASN1_TIME* time);
+/* Calculates digest md of data, return bytes written to digest or 0 on error
+ * Maximum of EVP_MAX_MD_SIZE will be written to digest */
 int calculate_digest(const EVP_MD* md, const uint8_t* data, size_t len, uint8_t* digest);
+/* Copies data of length len into already existing arr */
+int byte_array_init(ByteArray* arr, const uint8_t* data, int len);
+/* Converts ASN1_TIME string time into a unix timestamp */
+time_t ASN1_TIME_to_time_t(const ASN1_TIME* time);
 
 #ifdef __cplusplus
 }

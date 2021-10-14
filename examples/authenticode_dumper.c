@@ -22,7 +22,7 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../src/authenticode.h"
+#include <authenticode-parser/authenticode.h>
 
 void print_bytes(ByteArray *bytes)
 {
@@ -42,8 +42,12 @@ void print_certificate(Certificate *cert, char *indent)
     printf("%sSerial              : %s\n", indent, cert->serial);
     printf("%sNot After           : %lu\n", indent, cert->not_after);
     printf("%sNot Before          : %lu\n", indent, cert->not_before);
-    printf("%sSHA1                : ", indent); print_bytes(&cert->sha1);
-    printf("%sSHA256              : ", indent); print_bytes(&cert->sha256);
+    printf("%sSHA1                : ", indent);
+    print_bytes(&cert->sha1);
+
+    printf("%sSHA256              : ", indent);
+    print_bytes(&cert->sha256);
+
     printf("%sKey Algorithm       : %s\n", indent, cert->key_alg);
     printf("%sSignature Algorithm : %s\n", indent, cert->sig_alg);
     printf("%sPublic key          : %s\n", indent, cert->key);
@@ -52,10 +56,14 @@ void print_certificate(Certificate *cert, char *indent)
 void print_authenticode(Authenticode *auth)
 {
     char *indent = "    ";
+
     printf("%sPKCS7 Signature:\n", indent);
+
     indent = "      ";
+
     printf("%sVersion           : %d\n", indent, auth->version);
-    printf("%sDigest            : ", indent); print_bytes(&auth->digest);
+    printf("%sDigest            : ", indent);
+    print_bytes(&auth->digest);
     printf("%sDigest Algorithm  : %s\n", indent, auth->digest_alg);
     printf("%sVerify flags      : %d\n", indent, auth->verify_flags);
     printf("%sCertificate count : %ld\n", indent, auth->certs->count);
@@ -64,6 +72,7 @@ void print_authenticode(Authenticode *auth)
     if (auth->certs) {
         for (size_t i = 0; i < auth->certs->count; ++i) {
             char *indent = "        ";
+
             printf("%sCertificate %lu:\n", indent, i);
             print_certificate(auth->certs->certs[i], "              ");
         }
@@ -71,15 +80,21 @@ void print_authenticode(Authenticode *auth)
 
     if (auth->signer) {
         printf("%sSigner Info:\n", indent);
+
         char *indent = "        ";
-        printf("%sDigest       : ", indent); print_bytes(&auth->signer->digest);
+
+        printf("%sDigest       : ", indent);
+        print_bytes(&auth->signer->digest);
         printf("%sDigest Algo  : %s\n", indent, auth->signer->digest_alg);
         printf("%sProgram name : %s\n", indent, auth->signer->program_name);
+
         if (auth->signer->chain) {
             printf("%sChain size   : %lu\n", indent, auth->signer->chain->count);
             printf("%sChain:\n", indent);
+
             for (size_t i = 0; i < auth->signer->chain->count; ++i) {
                 char *indent = "            ";
+
                 printf("%sCertificate %lu:\n", indent, i);
                 print_certificate(auth->signer->chain->certs[i], "                ");
             }
@@ -93,15 +108,20 @@ void print_authenticode(Authenticode *auth)
             Countersignature *counter = auth->countersigs->counters[i];
             printf("%sCountersignature:\n", indent);
             char *indent = "        ";
-            printf("%sDigest           : ", indent); print_bytes(&counter->digest);
+
+            printf("%sDigest           : ", indent);
+            print_bytes(&counter->digest);
             printf("%sDigest Algorithm : %s\n", indent, counter->digest_alg);
-            printf("%sSigning Time     : %s\n", indent, counter->sign_time);
+            printf("%sSigning Time     : %lu\n", indent, counter->sign_time);
             printf("%sVerify flags     : %d\n", indent, counter->verify_flags);
+
             if (counter->chain) {
                 printf("%sChain size       : %lu\n", indent, counter->chain->count);
                 printf("%sChain:\n", indent);
+
                 for (size_t i = 0; i < counter->chain->count; ++i) {
                     char *indent = "            ";
+
                     printf("%sCertificate %lu:\n", indent, i);
                     print_certificate(counter->chain->certs[i], "                ");
                 }
@@ -113,6 +133,8 @@ void print_authenticode(Authenticode *auth)
 int main(int argc, char **argv)
 {
     if (argc != 2) {
+        printf("Missing file argument\n");
+        return 1;
     }
 
     FILE *fp = fopen(argv[1], "rb");
@@ -125,7 +147,7 @@ int main(int argc, char **argv)
     long fsize = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    unsigned char *data = malloc(fsize);
+    uint8_t *data = malloc(fsize);
     if (!data) {
         printf("Allocation failure.\n");
         return 1;
@@ -142,9 +164,10 @@ int main(int argc, char **argv)
 
     printf("Signature count: %lu\n", auth->count);
     printf("Signatures: %lu\n", auth->count);
-    for (size_t i = 0; i < auth->count; ++i) {
+
+    for (size_t i = 0; i < auth->count; ++i)
         print_authenticode(auth->signatures[i]);
-    }
+
     authenticode_array_free(auth);
     free(data);
 
