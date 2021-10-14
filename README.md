@@ -1,9 +1,9 @@
 ![Master](https://github.com/avast/authenticode-parser/actions/workflows/cmake.yml/badge.svg?branch=master)
 
 # Authenticode parser
-Authenticode-parser is a C library for parsing of Microsoft digital signature format that is being used to sign PE files on Windows systems.
+Authenticode-parser is a C library used to parse Microsoft digital signature format, that is being used to sign PE files on Windows systems.
 
-Library input is binary data with Authenticode signature, that is then verified and parsed into internal representation.
+The library interface takes binary data with Authenticode signature as input, which is then verified and parsed into an internal representation.
 
 Features:
 * Parsing of Authenticode signature - digests, signerInfo, certificates, building certificate chain
@@ -29,7 +29,7 @@ target_link_libraries(your-project
 
 If your library is in different location, you can pass the path to your CMake `-Dauthenticode_DIR=<path>` or set a `CMAKE_PREFIX_PATH`.
 
-Simple example of the library use, that dumps all the parsed information, and integration can be found [here](https://github.com/avast/authenticode-parser/tree/master/examples).
+A simple example of library use, that dumps all the parsed information, and integration can be found [here](https://github.com/avast/authenticode-parser/tree/master/examples).
 
 ## Build, Installation and Testing
 
