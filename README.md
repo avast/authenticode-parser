@@ -45,16 +45,16 @@ On Debian-based distributions (e.g. Ubuntu), the required packages can be instal
 sudo apt-get install build-essential cmake git openssl libssl-dev
 ```
 
-On Windows, the required packages can be install with [Chocolatey](https://chocolatey.org/) - `choco`
+On Windows, the required packages can be installed with [Chocolatey](https://chocolatey.org/) - `choco`
 
 ```sh
-choco install openssl cmake
+choco install openssl cmake git
 ```
 
-On MacOS, the required packages can be install with `brew`
+On MacOS, the required packages can be installed with `brew`
 
 ```sh
-brew install openssl@1.1 cmake
+brew install openssl@1.1 cmake git
 ```
 
 ### Build and Installation
