@@ -14,6 +14,7 @@ TEST(HelperModule, byte_array_init_0)
     EXPECT_EQ(array.len, 10);
     ASSERT_TRUE(array.data);
     EXPECT_TRUE(std::memcmp(array.data, data, array.len) == 0);
+    free(array.data);
 }
 
 TEST(HelperModule, byte_array_init_1)
@@ -25,6 +26,7 @@ TEST(HelperModule, byte_array_init_1)
     EXPECT_EQ(array.len, 1);
     ASSERT_TRUE(array.data);
     EXPECT_TRUE(std::memcmp(array.data, data, array.len) == 0);
+    free(array.data);
 }
 
 TEST(HelperModule, byte_array_init_2)
@@ -36,6 +38,7 @@ TEST(HelperModule, byte_array_init_2)
     EXPECT_EQ(array.len, 10000);
     ASSERT_TRUE(array.data);
     EXPECT_TRUE(std::memcmp(array.data, data, array.len) == 0);
+    free(array.data);
 }
 
 TEST(HelperModule, asn1_get_time_t_0)
@@ -44,6 +47,7 @@ TEST(HelperModule, asn1_get_time_t_0)
     ASN1_TIME_set(asn1time, 1527779085);
     time_t res = ASN1_TIME_to_time_t(asn1time);
     EXPECT_EQ(res, 1527779085);
+    ASN1_TIME_free(asn1time);
 }
 
 TEST(HelperModule, asn1_get_time_t_1)
@@ -53,6 +57,7 @@ TEST(HelperModule, asn1_get_time_t_1)
     EXPECT_TRUE(succ);
     time_t res = ASN1_TIME_to_time_t(asn1time);
     EXPECT_EQ(res, 1634206795);
+    ASN1_TIME_free(asn1time);
 }
 
 TEST(HelperModule, asn1_get_time_t_2)
@@ -62,6 +67,7 @@ TEST(HelperModule, asn1_get_time_t_2)
     EXPECT_TRUE(succ);
     time_t res = ASN1_TIME_to_time_t(asn1time);
     EXPECT_EQ(res, 163420);
+    ASN1_TIME_free(asn1time);
 }
 
 TEST(HelperModule, calculate_digest)

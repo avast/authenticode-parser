@@ -4,15 +4,20 @@
 #include <cstdint>
 #include <cstring>
 #include <gtest/gtest.h>
+#include <openssl/bio.h>
 #include <openssl/ossl_typ.h>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 
 TEST(CertificateModule, certificate_array_move)
 {
-    CertificateArray array1 = {.certs = nullptr, .count = 0};
+    CertificateArray array1;
+    array1.certs = nullptr;
+    array1.count = 0;
 
-    CertificateArray array2 = {.certs = nullptr, .count = 0};
+    CertificateArray array2;
+    array2.certs = nullptr;
+    array2.count = 0;
 
     Certificate cert1 = {0};
     Certificate cert2 = {0};
@@ -34,6 +39,8 @@ TEST(CertificateModule, certificate_array_move)
 
     EXPECT_EQ(array2.count, 0);
     EXPECT_FALSE(array2.certs);
+
+    free(array1.certs);
 }
 
 TEST(CertificateModule, certificate_new)
@@ -73,4 +80,5 @@ TEST(CertificateModule, certificate_new)
 
     X509_free(x509);
     certificate_free(cert);
+    BIO_free_all(bio);
 }

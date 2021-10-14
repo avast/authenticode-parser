@@ -37,7 +37,6 @@ SOFTWARE.
 class SignatureTest : public testing::Test
 {
   protected:
-    AuthenticodeArray *auth = nullptr;
     unsigned char *data = nullptr;
     long data_len = 0;
 
@@ -51,17 +50,14 @@ class SignatureTest : public testing::Test
         BIO_free_all(bio);
         OPENSSL_free(name);
         OPENSSL_free(header);
-
-        auth = authenticode_new(data, data_len);
-
-        OPENSSL_free(data);
     }
 
-    void TearDown() override { authenticode_array_free(auth); }
+    void TearDown() override { OPENSSL_free(data); }
 };
 
 TEST_F(SignatureTest, ResultOverview)
 {
+    AuthenticodeArray *auth = authenticode_new(data, data_len);
     ASSERT_NE(auth, nullptr);
 
     ASSERT_EQ(auth->count, 3);
@@ -74,6 +70,7 @@ TEST_F(SignatureTest, ResultOverview)
 
 TEST_F(SignatureTest, FirstSignatureContent)
 {
+    AuthenticodeArray *auth = authenticode_new(data, data_len);
     ASSERT_NE(auth, nullptr);
 
     ASSERT_EQ(auth->count, 3);
@@ -376,6 +373,7 @@ TEST_F(SignatureTest, FirstSignatureContent)
 
 TEST_F(SignatureTest, SecondSignatureContent)
 {
+    AuthenticodeArray *auth = authenticode_new(data, data_len);
     ASSERT_NE(auth, nullptr);
 
     ASSERT_EQ(auth->count, 3);
@@ -652,6 +650,7 @@ TEST_F(SignatureTest, SecondSignatureContent)
 
 TEST_F(SignatureTest, ThirdSignatureContent)
 {
+    AuthenticodeArray *auth = authenticode_new(data, data_len);
     ASSERT_NE(auth, nullptr);
 
     ASSERT_EQ(auth->count, 3);

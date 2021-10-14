@@ -29,6 +29,10 @@ SOFTWARE.
 
 #include <openssl/x509.h>
 
+#ifdef _WIN32
+#define timegm _mkgmtime
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
