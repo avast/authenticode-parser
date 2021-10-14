@@ -7,8 +7,8 @@ on:
     branches: [ master ]
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  # Use Debug type as Windows extra debug assertions can uncover extra bugs.
+  BUILD_TYPE: Debug
 
 jobs:
   build:
@@ -25,8 +25,7 @@ jobs:
     
     - name: Install OpenSSL on MacOS
       if: matrix.os == 'macos-latest'
-      # We want 1.1.1 version max as the 3.0 is default on MacOS otherwise
-      run: brew install openssl@1.1
+      run: brew install openssl
     
     - name: Install OpenSSL on Windows
       if: matrix.os == 'windows-latest'
