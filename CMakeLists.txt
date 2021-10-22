@@ -14,7 +14,13 @@ add_library(authenticode STATIC
         src/certificate.c
 )
 
-target_compile_options(authenticode PRIVATE -Wall)
+include (TestBigEndian)
+TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+if(IS_BIG_ENDIAN)
+        target_compile_definitions(-DWORDS_BIGENDIAN)
+endif()
+
+target_compile_options(authenticode PRIVATE -Wall -fpie)
 target_compile_features(authenticode PRIVATE c_std_11)
 
 target_include_directories(authenticode

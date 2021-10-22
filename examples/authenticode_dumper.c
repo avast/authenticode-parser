@@ -24,7 +24,7 @@ SOFTWARE.
 
 #include <authenticode-parser/authenticode.h>
 
-void print_bytes(ByteArray *bytes)
+void print_bytes(const ByteArray *bytes)
 {
     if (bytes->data) {
         for (int i = 0; i < bytes->len; ++i) {
@@ -64,6 +64,8 @@ void print_authenticode(Authenticode *auth)
     printf("%sVersion           : %d\n", indent, auth->version);
     printf("%sDigest            : ", indent);
     print_bytes(&auth->digest);
+    printf("%sFile Digest       : ", indent);
+    print_bytes(&auth->file_digest);
     printf("%sDigest Algorithm  : %s\n", indent, auth->digest_alg);
     printf("%sVerify flags      : %d\n", indent, auth->verify_flags);
     printf("%sCertificate count : %ld\n", indent, auth->certs->count);
@@ -156,7 +158,7 @@ int main(int argc, char **argv)
     fread(data, 1, fsize, fp);
     fclose(fp);
 
-    AuthenticodeArray *auth = authenticode_new(data, fsize);
+    AuthenticodeArray *auth = parse_authenticode(data, fsize);
     if (!auth) {
         printf("Couldn't parse any signatures.\n");
         return 0;
