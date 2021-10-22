@@ -428,7 +428,7 @@ end:
     return result;
 }
 
-void authenticode_digest(
+static int authenticode_digest(
     const EVP_MD* md,
     const uint8_t* pe_data,
     long pe_len,
@@ -437,7 +437,6 @@ void authenticode_digest(
     uint32_t cert_table_addr,
     uint8_t* digest)
 {
-    // TODO error handling
     uint32_t buffer_size = 0xFFFF;
     uint8_t* buffer = malloc(buffer_size);
 
@@ -445,18 +444,26 @@ void authenticode_digest(
     BIO* bio = BIO_new_mem_buf(pe_data, cert_table_addr);
 
     EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
-    EVP_DigestInit(mdctx, md);
+    if (!buffer || !bio || !mdctx)
+        goto error;
+
+    if (!EVP_DigestInit(mdctx, md))
+        goto error;
 
     /* Calculate size of the space between file start and PE header */
     /* Checksum starts at 0x58th byte of the header */
     uint32_t pe_checksum_offset = pe_hdr_offset + 0x58;
 
     /* Read the data before the checksum and pass it to the digest func */
-    BIO_read(bio, buffer, pe_checksum_offset);
-    EVP_DigestUpdate(mdctx, buffer, pe_checksum_offset);
+    if (BIO_read(bio, buffer, pe_checksum_offset) <= 0)
+        goto error;
+
+    if (!EVP_DigestUpdate(mdctx, buffer, pe_checksum_offset))
+        goto error;
 
     /* Skip the checksum */
-    BIO_read(bio, buffer, 4);
+    if (BIO_read(bio, buffer, 4) <= 0)
+        goto error;
 
     /* 64bit PE file is larger than 32bit */
     uint32_t pe64_extra = is_64bit ? 16 : 0;
@@ -464,11 +471,15 @@ void authenticode_digest(
     /* Read up to certificate table*/
     uint32_t cert_table_offset = 0x3c + pe64_extra;
 
-    BIO_read(bio, buffer, cert_table_offset);
-    EVP_DigestUpdate(mdctx, buffer, cert_table_offset);
+    if (BIO_read(bio, buffer, cert_table_offset) <= 0)
+        goto error;
+
+    if (!EVP_DigestUpdate(mdctx, buffer, cert_table_offset))
+        goto error;
 
     /* Skip certificate table */
-    BIO_read(bio, buffer, 8);
+    if (BIO_read(bio, buffer, 8) <= 0)
+        goto error;
 
     /* pe header with check sum + checksum + cert table offset + cert table len */
     uint32_t fpos = pe_checksum_offset + 4 + cert_table_offset + 8;
@@ -483,18 +494,27 @@ void authenticode_digest(
 
         int rlen = BIO_read(bio, buffer, len_to_read);
         if (rlen <= 0)
-            break;
+            goto error;
 
-        EVP_DigestUpdate(mdctx, buffer, rlen);
+        if (!EVP_DigestUpdate(mdctx, buffer, rlen))
+            goto error;
         fpos += rlen;
     }
 
     /* Calculate the digest, write it into digest */
-    EVP_DigestFinal(mdctx, digest, NULL);
+    if (!EVP_DigestFinal(mdctx, digest, NULL))
+        goto error;
 
     EVP_MD_CTX_free(mdctx);
     BIO_free_all(bio);
     free(buffer);
+    return 0;
+
+error:
+    EVP_MD_CTX_free(mdctx);
+    BIO_free_all(bio);
+    free(buffer);
+    return 1;
 }
 
 AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, long pe_len)
@@ -556,8 +576,11 @@ AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, long pe_len)
         if (!sig->file_digest.data)
             continue;
 
-        authenticode_digest(
-            md, pe_data, pe_len, pe_offset, is_64bit, cert_addr, sig->file_digest.data);
+        if (authenticode_digest(
+                md, pe_data, pe_len, pe_offset, is_64bit, cert_addr, sig->file_digest.data)) {
+            sig->verify_flags = AUTHENTICODE_VFY_INTERNAL_ERROR;
+            break;
+        }
 
         /* Complete the verification */
         if (memcmp(sig->file_digest.data, sig->digest.data, mdlen) != 0)
