@@ -431,14 +431,13 @@ end:
 static int authenticode_digest(
     const EVP_MD* md,
     const uint8_t* pe_data,
-    long pe_len,
     uint32_t pe_hdr_offset,
     bool is_64bit,
     uint32_t cert_table_addr,
     uint8_t* digest)
 {
     uint32_t buffer_size = 0xFFFF;
-    uint8_t* buffer = malloc(buffer_size);
+    uint8_t* buffer = (uint8_t*)malloc(buffer_size);
 
     /* BIO with the file data */
     BIO* bio = BIO_new_mem_buf(pe_data, cert_table_addr);
@@ -453,13 +452,22 @@ static int authenticode_digest(
     /* Calculate size of the space between file start and PE header */
     /* Checksum starts at 0x58th byte of the header */
     uint32_t pe_checksum_offset = pe_hdr_offset + 0x58;
+    /* Space between DOS and PE header could have arbitrary amount of data, read in chunks */
+    uint32_t fpos = 0;
+    while (fpos < pe_checksum_offset) {
+        uint32_t len_to_read = pe_checksum_offset - fpos;
+        if (len_to_read > buffer_size)
+            len_to_read = buffer_size;
 
-    /* Read the data before the checksum and pass it to the digest func */
-    if (BIO_read(bio, buffer, pe_checksum_offset) <= 0)
-        goto error;
+        int rlen = BIO_read(bio, buffer, len_to_read);
+        if (rlen <= 0)
+            goto error;
 
-    if (!EVP_DigestUpdate(mdctx, buffer, pe_checksum_offset))
-        goto error;
+        if (!EVP_DigestUpdate(mdctx, buffer, rlen))
+            goto error;
+
+        fpos += rlen;
+    }
 
     /* Skip the checksum */
     if (BIO_read(bio, buffer, 4) <= 0)
@@ -481,8 +489,8 @@ static int authenticode_digest(
     if (BIO_read(bio, buffer, 8) <= 0)
         goto error;
 
-    /* pe header with check sum + checksum + cert table offset + cert table len */
-    uint32_t fpos = pe_checksum_offset + 4 + cert_table_offset + 8;
+    /* PE header with check sum + checksum + cert table offset + cert table len */
+    fpos = pe_checksum_offset + 4 + cert_table_offset + 8;
 
     /* Hash everything up to the signature (assuming signature is stored in the
      * end of the file) */
@@ -566,7 +574,10 @@ AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, long pe_len)
 
         const EVP_MD* md = EVP_get_digestbyname(sig->digest_alg);
         if (!md || !sig->digest.len || !sig->digest.data) {
-            sig->verify_flags = AUTHENTICODE_VFY_UNKNOWN_ALGORITHM;
+            /* If there is an verification error, keep the first error */
+            if (sig->verify_flags == AUTHENTICODE_VFY_VALID)
+                sig->verify_flags = AUTHENTICODE_VFY_UNKNOWN_ALGORITHM;
+
             continue;
         }
 
@@ -577,14 +588,19 @@ AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, long pe_len)
             continue;
 
         if (authenticode_digest(
-                md, pe_data, pe_len, pe_offset, is_64bit, cert_addr, sig->file_digest.data)) {
-            sig->verify_flags = AUTHENTICODE_VFY_INTERNAL_ERROR;
+                md, pe_data, pe_offset, is_64bit, cert_addr, sig->file_digest.data)) {
+
+            /* If there is an verification error, keep the first error */
+            if (sig->verify_flags == AUTHENTICODE_VFY_VALID)
+                sig->verify_flags = AUTHENTICODE_VFY_INTERNAL_ERROR;
             break;
         }
 
         /* Complete the verification */
-        if (memcmp(sig->file_digest.data, sig->digest.data, mdlen) != 0)
-            sig->verify_flags = AUTHENTICODE_VFY_WRONG_FILE_DIGEST;
+        if (sig->verify_flags == AUTHENTICODE_VFY_VALID) {
+            if (memcmp(sig->file_digest.data, sig->digest.data, mdlen) != 0)
+                sig->verify_flags = AUTHENTICODE_VFY_WRONG_FILE_DIGEST;
+        }
     }
 
     return auth_array;
