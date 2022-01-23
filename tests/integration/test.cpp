@@ -151,6 +151,7 @@ TEST_F(SignatureTest, FirstSignatureContent)
         "VMETfMV58cnBcQIDAQAB");
     EXPECT_STREQ(cert->serial, "7e:93:eb:fb:7c:c6:4e:59:ea:4b:9a:77:d4:06:fc:3b");
     EXPECT_STREQ(cert->sig_alg, "sha1WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.5");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -188,6 +189,7 @@ TEST_F(SignatureTest, FirstSignatureContent)
         "i1aLM73ZY8hJnTrFxeozC9Lxoxv0i77Zs1eLO94Ep3oisiSuLsdwxb5OgyYI+wu9qU+ZCOEQKHKqzQIDAQAB");
     EXPECT_STREQ(cert->serial, "0e:cf:f4:38:c8:fe:bf:35:6e:04:d8:6a:98:1b:1a:50");
     EXPECT_STREQ(cert->sig_alg, "sha1WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.5");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -230,6 +232,7 @@ TEST_F(SignatureTest, FirstSignatureContent)
         "QAB");
     EXPECT_STREQ(cert->serial, "30:63:b3:a7:40:c1:cd:fd:f8:bb:9e:6c:33:1a:d7:de");
     EXPECT_STREQ(cert->sig_alg, "sha1WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.5");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -272,6 +275,7 @@ TEST_F(SignatureTest, FirstSignatureContent)
 
     EXPECT_STREQ(cert->serial, "52:00:e5:aa:25:56:fc:1a:86:ed:96:c9:d4:4b:33:c7");
     EXPECT_STREQ(cert->sig_alg, "sha1WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.5");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //*******************************************//
@@ -330,6 +334,7 @@ TEST_F(SignatureTest, FirstSignatureContent)
         "i1aLM73ZY8hJnTrFxeozC9Lxoxv0i77Zs1eLO94Ep3oisiSuLsdwxb5OgyYI+wu9qU+ZCOEQKHKqzQIDAQAB");
     EXPECT_STREQ(cert->serial, "0e:cf:f4:38:c8:fe:bf:35:6e:04:d8:6a:98:1b:1a:50");
     EXPECT_STREQ(cert->sig_alg, "sha1WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.5");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -370,6 +375,7 @@ TEST_F(SignatureTest, FirstSignatureContent)
         "VMETfMV58cnBcQIDAQAB");
     EXPECT_STREQ(cert->serial, "7e:93:eb:fb:7c:c6:4e:59:ea:4b:9a:77:d4:06:fc:3b");
     EXPECT_STREQ(cert->sig_alg, "sha1WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.5");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     authenticode_array_free(auth);
@@ -464,6 +470,7 @@ TEST_F(SignatureTest, SecondSignatureContent)
         "HLEtEekQIDAQAB");
     EXPECT_STREQ(cert->serial, "06");
     EXPECT_STREQ(cert->sig_alg, "sha1WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.5");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -505,6 +512,7 @@ TEST_F(SignatureTest, SecondSignatureContent)
         "dYr77fY5NUdbRE6kvaTyZzjSO67Uw7UNpeGeMWhNwIDAQAB");
     EXPECT_STREQ(cert->serial, "7b:05:b1:d4:49:68:51:44:f7:c9:89:d2:9c:19:9d:12");
     EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -546,6 +554,7 @@ TEST_F(SignatureTest, SecondSignatureContent)
         "LFtG/l77CKmwIDAQAB");
     EXPECT_STREQ(cert->serial, "7b:d4:e5:af:ba:cc:07:3f:a1:01:23:04:22:41:4d:12");
     EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //*******************************************//
@@ -608,6 +617,7 @@ TEST_F(SignatureTest, SecondSignatureContent)
         "LFtG/l77CKmwIDAQAB");
     EXPECT_STREQ(cert->serial, "7b:d4:e5:af:ba:cc:07:3f:a1:01:23:04:22:41:4d:12");
     EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -649,6 +659,7 @@ TEST_F(SignatureTest, SecondSignatureContent)
         "dYr77fY5NUdbRE6kvaTyZzjSO67Uw7UNpeGeMWhNwIDAQAB");
     EXPECT_STREQ(cert->serial, "7b:05:b1:d4:49:68:51:44:f7:c9:89:d2:9c:19:9d:12");
     EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     authenticode_array_free(auth);
@@ -739,6 +750,7 @@ TEST_F(SignatureTest, ThirdSignatureContent)
         "uSqHn5HrLf0OSQbUwmw2e6FhCpdlDr/Ojx8fT/rX7Nqs7T+wGjP6zk8CU/NXzC4IlnTypJ/gVpkVP4QIDAQAB");
     EXPECT_STREQ(cert->serial, "38:bf:a6:1b:82:b8:0f:60:57:15:e4:8a:a1:0d:e1:53");
     EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     //**************************//
@@ -781,6 +793,7 @@ TEST_F(SignatureTest, ThirdSignatureContent)
         "XE+Q4qITVRrgThsIbnepaON2b2wIDAQAB");
     EXPECT_STREQ(cert->serial, "3d:78:d7:f9:76:49:60:b2:61:7d:f4:f0:1e:ca:86:2a");
     EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");
 
     ASSERT_TRUE(third_sig->certs);
@@ -812,85 +825,6 @@ TEST_F(SignatureTest, ThirdSignatureContent)
     authenticode_array_free(auth);
 }
 
-static void print_bytes(const ByteArray *bytes)
-{
-    if (bytes->data) {
-        for (int i = 0; i < bytes->len; ++i) {
-            printf("%02x", bytes->data[i]);
-        }
-        puts("");
-    }
-}
-
-void authenticode_digest(
-    const EVP_MD *md,
-    const uint8_t *pe_data,
-    long pe_len,
-    uint32_t pe_hdr_offset,
-    bool is_64bit,
-    uint32_t cert_table_addr,
-    uint8_t *digest)
-{
-    // TODO error handling
-    uint32_t buffer_size = 0xFFFF;
-    uint8_t *buffer = (uint8_t *)malloc(buffer_size);
-
-    /* BIO with the file data */
-    BIO *bio = BIO_new_mem_buf(pe_data, cert_table_addr);
-
-    EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
-    EVP_DigestInit(mdctx, md);
-
-    /* Calculate size of the space between file start and PE header */
-    /* Checksum starts at 0x58th byte of the header */
-    uint32_t pe_checksum_offset = pe_hdr_offset + 0x58;
-
-    /* Read the data before the checksum and pass it to the digest func */
-    BIO_read(bio, buffer, pe_checksum_offset);
-    EVP_DigestUpdate(mdctx, buffer, pe_checksum_offset);
-
-    /* Skip the checksum */
-    BIO_read(bio, buffer, 4);
-
-    /* 64bit PE file is larger than 32bit */
-    uint32_t pe64_extra = is_64bit ? 16 : 0;
-
-    /* Read up to certificate table*/
-    uint32_t cert_table_offset = 0x3c + pe64_extra;
-
-    BIO_read(bio, buffer, cert_table_offset);
-    EVP_DigestUpdate(mdctx, buffer, cert_table_offset);
-
-    /* Skip certificate table */
-    BIO_read(bio, buffer, 8);
-
-    /* pe header with check sum + checksum + cert table offset + cert table len */
-    uint32_t fpos = pe_checksum_offset + 4 + cert_table_offset + 8;
-
-    /* Hash everything up to the signature (assuming signature is stored in the
-     * end of the file) */
-    /* Read chunks of the file in case the file is large */
-    while (fpos < cert_table_addr) {
-        uint32_t len_to_read = cert_table_addr - fpos;
-        if (len_to_read > buffer_size)
-            len_to_read = buffer_size;
-
-        int rlen = BIO_read(bio, buffer, len_to_read);
-        if (rlen <= 0)
-            break;
-
-        EVP_DigestUpdate(mdctx, buffer, rlen);
-        fpos += rlen;
-    }
-
-    /* Calculate the digest, write it into digest */
-    EVP_DigestFinal(mdctx, digest, NULL);
-
-    EVP_MD_CTX_free(mdctx);
-    BIO_free_all(bio);
-    free(buffer);
-}
-
 TEST(PefileTest, ResultOverview)
 {
     AuthenticodeArray *auth = parse_authenticode(PE_FILE_1, PE_FILE_1_LEN);
@@ -902,38 +836,45 @@ TEST(PefileTest, ResultOverview)
     const Authenticode *sig = auth->signatures[0];
     {
         ASSERT_TRUE(sig);
-        ASSERT_EQ(sig->verify_flags, AUTHENTICODE_VFY_WRONG_FILE_DIGEST);
-        ASSERT_EQ(sig->digest.len, 20);
-        ASSERT_STREQ(sig->digest_alg, "sha1");
+        EXPECT_EQ(sig->verify_flags, AUTHENTICODE_VFY_WRONG_FILE_DIGEST);
+        EXPECT_EQ(sig->digest.len, 20);
+        EXPECT_STREQ(sig->digest_alg, "sha1");
+
+        EXPECT_STREQ(sig->certs->certs[0]->sig_alg_oid, "1.2.840.113549.1.1.5");
+        EXPECT_STREQ(sig->certs->certs[0]->sig_alg, "sha1WithRSAEncryption");
+
         unsigned char sig_digest[] = {0xD6, 0x43, 0x40, 0x50, 0x56, 0xA4, 0xA1, 0x60, 0x42, 0xD4,
                                       0x79, 0x42, 0xA8, 0xC6, 0xA5, 0x95, 0x24, 0xBD, 0xA6, 0x4A};
-        ASSERT_TRUE(std::memcmp(sig->digest.data, sig_digest, sig->digest.len) == 0);
+        EXPECT_TRUE(std::memcmp(sig->digest.data, sig_digest, sig->digest.len) == 0);
 
         unsigned char real_file_digest[] = {0x9a, 0xd3, 0x54, 0xc6, 0xd1, 0xd3, 0xe5,
                                             0xe5, 0x8b, 0xc4, 0x7e, 0x1c, 0xd3, 0x80,
                                             0xd1, 0x2b, 0x75, 0xe5, 0x05, 0x1c};
 
-        ASSERT_TRUE(
+        EXPECT_TRUE(
             std::memcmp(sig->file_digest.data, real_file_digest, sizeof(real_file_digest)) == 0);
     }
     sig = auth->signatures[1];
     {
         ASSERT_TRUE(sig);
-        ASSERT_EQ(sig->verify_flags, AUTHENTICODE_VFY_WRONG_FILE_DIGEST);
+        EXPECT_EQ(sig->verify_flags, AUTHENTICODE_VFY_WRONG_FILE_DIGEST);
+
+        EXPECT_STREQ(sig->certs->certs[0]->sig_alg_oid, "1.2.840.113549.1.1.5");
+        EXPECT_STREQ(sig->certs->certs[0]->sig_alg, "sha1WithRSAEncryption");
 
         unsigned char sig_digest[] = {0x75, 0xCA, 0xCD, 0xF5, 0xBE, 0x7B, 0xAE, 0xEC,
                                       0xB8, 0x9C, 0x70, 0xBC, 0x01, 0x34, 0x3F, 0xB7,
                                       0xC9, 0xE8, 0xFD, 0x00, 0x0C, 0xC1, 0x91, 0xF0,
                                       0x8D, 0x2A, 0x99, 0x63, 0x59, 0xD6, 0x17, 0xFE};
 
-        ASSERT_TRUE(std::memcmp(sig->digest.data, sig_digest, sizeof(sig_digest)) == 0);
+        EXPECT_TRUE(std::memcmp(sig->digest.data, sig_digest, sizeof(sig_digest)) == 0);
 
         unsigned char real_file_digest[] = {0x29, 0xc3, 0x24, 0xac, 0xc3, 0xbd, 0x59, 0x6c,
                                             0xce, 0xbd, 0x28, 0xe7, 0xd8, 0xa8, 0x8b, 0x87,
                                             0xb0, 0x6a, 0x87, 0xf2, 0xfd, 0x1f, 0xc2, 0x81,
                                             0x52, 0x5c, 0xe0, 0xda, 0xe4, 0x2b, 0x46, 0xb3};
 
-        ASSERT_TRUE(
+        EXPECT_TRUE(
             std::memcmp(sig->file_digest.data, real_file_digest, sizeof(real_file_digest)) == 0);
     }
 
