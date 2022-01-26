@@ -50,6 +50,8 @@ class SignatureTest : public testing::Test
         BIO_free_all(bio);
         OPENSSL_free(name);
         OPENSSL_free(header);
+
+        initialize_authenticode_parser();
     }
 
     void TearDown() override { OPENSSL_free(data); }
@@ -827,6 +829,8 @@ TEST_F(SignatureTest, ThirdSignatureContent)
 
 TEST(PefileTest, ResultOverview)
 {
+    initialize_authenticode_parser();
+
     AuthenticodeArray *auth = parse_authenticode(PE_FILE_1, PE_FILE_1_LEN);
     ASSERT_NE(auth, nullptr);
 

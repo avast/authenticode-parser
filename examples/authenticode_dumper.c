@@ -157,7 +157,8 @@ int main(int argc, char **argv)
 
     fread(data, 1, fsize, fp);
     fclose(fp);
-
+    /* initialize all global openssl objects */
+    initialize_authenticode_parser();
     AuthenticodeArray *auth = parse_authenticode(data, fsize);
     if (!auth) {
         printf("Couldn't parse any signatures.\n");
