@@ -30,6 +30,27 @@ SOFTWARE.
 
 #include "helper.h"
 
+#if OPENSSL_VERSION_NUMBER >= 0x3000000fL
+/* Removes any escaping \/ -> / that is happening with oneline() functions
+    from OpenSSL 3.0 */
+static void parse_oneline_string(char* string)
+{
+    size_t len = strlen(string);
+    char* tmp = string;
+    while (true) {
+        char* ptr = strstr(tmp, "\\/");
+        if (!ptr)
+            break;
+
+        memmove(ptr, ptr + 1, strlen(ptr + 1));
+        tmp = ptr + 1;
+        len--;
+    }
+
+    string[len] = 0;
+}
+#endif
+
 static void parse_name_attributes(X509_NAME* raw, Attributes* attr)
 {
     if (!raw || !attr)
@@ -269,11 +290,19 @@ Certificate* certificate_new(X509* x509)
      * but we want to comply with existing YARA code */
     X509_NAME* issuerName = X509_get_issuer_name(x509);
     X509_NAME_oneline(issuerName, buffer, sizeof(buffer));
+
     result->issuer = strdup(buffer);
+    /* This is a little ugly hack for 3.0 compatibility */
+#if OPENSSL_VERSION_NUMBER >= 0x3000000fL
+    parse_oneline_string(result->issuer);
+#endif
 
     X509_NAME* subjectName = X509_get_subject_name(x509);
     X509_NAME_oneline(subjectName, buffer, sizeof(buffer));
     result->subject = strdup(buffer);
+#if OPENSSL_VERSION_NUMBER >= 0x3000000fL
+    parse_oneline_string(result->subject);
+#endif
 
     parse_name_attributes(issuerName, &result->issuer_attrs);
     parse_name_attributes(subjectName, &result->subject_attrs);

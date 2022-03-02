@@ -11,7 +11,7 @@ env:
   BUILD_TYPE: Debug
 
 jobs:
-  build:
+  test-openssl1-1:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -38,6 +38,25 @@ jobs:
 
     - name: Configure MacOS CMake
       if: matrix.os == 'macos-latest'
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}} -VV
+
+  test-openssl3-0:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install OpenSSL on MacOS
+      run: brew install openssl@3
+
+    - name: Configure MacOS CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
 
     - name: Build
