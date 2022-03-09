@@ -567,8 +567,8 @@ AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, long pe_len)
     uint32_t dwLength = letoh32(*(uint32_t*)(pe_data + cert_addr));
     if (pe_len < cert_addr + dwLength)
         return NULL;
-
-    AuthenticodeArray* auth_array = authenticode_new(pe_data + cert_addr + 0x8, dwLength);
+    /* dwLength = offsetof(WIN_CERTIFICATE, bCertificate) + (size of the variable-length binary array contained within bCertificate) */
+    AuthenticodeArray* auth_array = authenticode_new(pe_data + cert_addr + 0x8, dwLength - 0x8);
     if (!auth_array)
         return NULL;
 
