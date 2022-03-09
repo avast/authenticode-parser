@@ -561,7 +561,7 @@ AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, long pe_len)
     uint64_t cert_len = letoh32(*(uint32_t*)(pe_data + pe_cert_table_addr + 4));
 
     /* we need atleast 8 bytes to read dwLength, revision and certType */
-    if (cert_len < 8 || pe_len < cert_addr + cert_len)
+    if (cert_len < 8 || pe_len < cert_addr + 8)
         return NULL;
 
     uint32_t dwLength = letoh32(*(uint32_t*)(pe_data + cert_addr));
