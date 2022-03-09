@@ -132,12 +132,17 @@ Countersignature* pkcs9_countersig_new(
 
     /* compare the encrypted digest and calculated digest */
     bool isValid = false;
+     
+#if OPENSSL_VERSION_NUMBER >= 0x3000000fL
+    size_t mdLen = EVP_MD_get_size(md);
+#else
+    size_t mdLen = EVP_MD_size(md);
+#endif
     /* Sometimes signed data contains DER encoded DigestInfo structure which contains hash of
      * authenticated attributes (39c9d136f026a9ad18fb9f41a64f76dd8418e8de625dce5d3a372bd242fc5edd)
      * but other times it is just purely and I didn't find another way to  distinguish it but only
      * based on the length of data we get. Found mention of this in openssl mailing list:
      * https://mta.openssl.org/pipermail/openssl-users/2015-September/002054.html */
-    size_t mdLen = EVP_MD_size(md);
     if (mdLen == decLen) {
         isValid = !memcmp(calc_digest, decData, mdLen);
     } else {
@@ -238,7 +243,12 @@ Countersignature* ms_countersig_new(const uint8_t* data, long size, ASN1_STRING*
 
     uint8_t calc_digest[EVP_MAX_MD_SIZE];
     calculate_digest(md, enc_digest->data, enc_digest->length, calc_digest);
+
+#if OPENSSL_VERSION_NUMBER >= 0x3000000fL
+    int mdLen = EVP_MD_get_size(md);
+#else
     int mdLen = EVP_MD_size(md);
+#endif
 
     if (digestLen != mdLen || memcmp(calc_digest, digestData, mdLen) != 0) {
         result->verify_flags = COUNTERSIGNATURE_VFY_DOESNT_MATCH_SIGNATURE;
@@ -251,7 +261,11 @@ Countersignature* ms_countersig_new(const uint8_t* data, long size, ASN1_STRING*
 
     TS_VERIFY_CTX_set_flags(ctx, TS_VFY_VERSION | TS_VFY_IMPRINT);
     TS_VERIFY_CTX_set_store(ctx, store);
+#if OPENSSL_VERSION_NUMBER >= 0x3000000fL
+    TS_VERIFY_CTX_set_certs(ctx, p7->d.sign->cert);
+#else
     TS_VERIFY_CTS_set_certs(ctx, p7->d.sign->cert);
+#endif
     TS_VERIFY_CTX_set_imprint(ctx, calc_digest, mdLen);
 
     bool isValid = TS_RESP_verify_token(ctx, p7) == 1;
