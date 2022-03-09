@@ -52,25 +52,26 @@ Countersignature* pkcs9_countersig_new(
     int digestnid = OBJ_obj2nid(si->digest_alg->algorithm);
     result->digest_alg = strdup(OBJ_nid2ln(digestnid));
 
-    /* Get digest that corresponds to decrypted encrypted digest in signature */
-    ASN1_TYPE* messageDigest = PKCS7_get_signed_attribute(si, NID_pkcs9_messageDigest);
-
     const ASN1_TYPE* sign_time = PKCS7_get_signed_attribute(si, NID_pkcs9_signingTime);
-    result->sign_time = ASN1_TIME_to_time_t(sign_time->value.utctime);
-
-    X509* signCert = X509_find_by_issuer_and_serial(
-        certs, si->issuer_and_serial->issuer, si->issuer_and_serial->serial);
-    /* PKCS9 stores certificates in the corresponding PKCS7 it countersigns */
-    result->chain = parse_signer_chain(signCert, certs);
-
     if (!sign_time) {
         result->verify_flags = COUNTERSIGNATURE_VFY_TIME_MISSING;
         goto end;
     }
+
+    result->sign_time = ASN1_TIME_to_time_t(sign_time->value.utctime);
+
+    X509* signCert = X509_find_by_issuer_and_serial(
+        certs, si->issuer_and_serial->issuer, si->issuer_and_serial->serial);
     if (!signCert) {
         result->verify_flags = COUNTERSIGNATURE_VFY_NO_SIGNER_CERT;
         goto end;
     }
+
+    /* PKCS9 stores certificates in the corresponding PKCS7 it countersigns */
+    result->chain = parse_signer_chain(signCert, certs);
+
+    /* Get digest that corresponds to decrypted encrypted digest in signature */
+    ASN1_TYPE* messageDigest = PKCS7_get_signed_attribute(si, NID_pkcs9_messageDigest);
     if (!messageDigest) {
         result->verify_flags = COUNTERSIGNATURE_VFY_DIGEST_MISSING;
         goto end;
@@ -197,23 +198,24 @@ Countersignature* ms_countersig_new(const uint8_t* data, long size, ASN1_STRING*
     }
 
     const ASN1_TIME* rawTime = TS_TST_INFO_get_time(ts);
-    result->sign_time = ASN1_TIME_to_time_t(rawTime);
-
-    STACK_OF(X509)* sigs = PKCS7_get0_signers(p7, p7->d.sign->cert, 0);
-    X509* signCert = sk_X509_value(sigs, 0);
-    result->chain = parse_signer_chain(signCert, p7->d.sign->cert);
-
-    /* Imprint == digest */
-    TS_MSG_IMPRINT* imprint = TS_TST_INFO_get_msg_imprint(ts);
-
     if (!rawTime) {
         result->verify_flags = COUNTERSIGNATURE_VFY_TIME_MISSING;
         goto end;
     }
+
+    result->sign_time = ASN1_TIME_to_time_t(rawTime);
+
+    STACK_OF(X509)* sigs = PKCS7_get0_signers(p7, p7->d.sign->cert, 0);
+    X509* signCert = sk_X509_value(sigs, 0);
     if (!signCert) {
         result->verify_flags = COUNTERSIGNATURE_VFY_NO_SIGNER_CERT;
         goto end;
     }
+
+    result->chain = parse_signer_chain(signCert, p7->d.sign->cert);
+
+    /* Imprint == digest */
+    TS_MSG_IMPRINT* imprint = TS_TST_INFO_get_msg_imprint(ts);
     if (!imprint) {
         result->verify_flags = COUNTERSIGNATURE_VFY_DIGEST_MISSING;
         goto end;
