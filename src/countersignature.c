@@ -200,7 +200,9 @@ Countersignature* ms_countersig_new(const uint8_t* data, long size, ASN1_STRING*
     const ASN1_TIME* rawTime = TS_TST_INFO_get_time(ts);
     if (!rawTime) {
         result->verify_flags = COUNTERSIGNATURE_VFY_TIME_MISSING;
-        goto end;
+        TS_TST_INFO_free(ts);
+        PKCS7_free(p7);
+        return result;
     }
 
     result->sign_time = ASN1_TIME_to_time_t(rawTime);
