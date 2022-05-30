@@ -525,7 +525,7 @@ error:
 
 AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, uint64_t pe_len)
 {
-    const int dos_hdr_size = 0x40;
+    const uint64_t dos_hdr_size = 0x40;
     if (pe_len < dos_hdr_size)
         return NULL;
 
