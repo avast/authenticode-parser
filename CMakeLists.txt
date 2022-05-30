@@ -20,7 +20,7 @@ if(IS_BIG_ENDIAN)
         target_compile_definitions(-DWORDS_BIGENDIAN)
 endif()
 
-target_compile_options(authenticode PRIVATE -Wall -fpie)
+target_compile_options(authenticode PRIVATE -Wall -Wextra -fpie)
 target_compile_features(authenticode PRIVATE c_std_11)
 
 target_include_directories(authenticode
