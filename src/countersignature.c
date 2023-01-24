@@ -58,7 +58,7 @@ Countersignature* pkcs9_countersig_new(
         goto end;
     }
 
-    result->sign_time = ASN1_TIME_to_time_t(sign_time->value.utctime);
+    result->sign_time = ASN1_TIME_to_int64_t(sign_time->value.utctime);
 
     X509* signCert = X509_find_by_issuer_and_serial(
         certs, si->issuer_and_serial->issuer, si->issuer_and_serial->serial);
@@ -205,7 +205,7 @@ Countersignature* ms_countersig_new(const uint8_t* data, long size, ASN1_STRING*
         return result;
     }
 
-    result->sign_time = ASN1_TIME_to_time_t(rawTime);
+    result->sign_time = ASN1_TIME_to_int64_t(rawTime);
 
     STACK_OF(X509)* sigs = PKCS7_get0_signers(p7, p7->d.sign->cert, 0);
     X509* signCert = sk_X509_value(sigs, 0);

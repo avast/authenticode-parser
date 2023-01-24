@@ -41,31 +41,31 @@ TEST(HelperModule, byte_array_init_2)
     free(array.data);
 }
 
-TEST(HelperModule, asn1_get_time_t_0)
+TEST(HelperModule, asn1_time_get_int64_t_0)
 {
     auto asn1time = ASN1_TIME_new();
     ASN1_TIME_set(asn1time, 1527779085);
-    time_t res = ASN1_TIME_to_time_t(asn1time);
+    int64_t res = ASN1_TIME_to_int64_t(asn1time);
     EXPECT_EQ(res, 1527779085);
     ASN1_TIME_free(asn1time);
 }
 
-TEST(HelperModule, asn1_get_time_t_1)
+TEST(HelperModule, asn1_time_get_int64_t_1)
 {
     auto asn1time = ASN1_TIME_new();
     int succ = ASN1_TIME_set_string(asn1time, "211014101955Z");
     EXPECT_TRUE(succ);
-    time_t res = ASN1_TIME_to_time_t(asn1time);
+    int64_t res = ASN1_TIME_to_int64_t(asn1time);
     EXPECT_EQ(res, 1634206795);
     ASN1_TIME_free(asn1time);
 }
 
-TEST(HelperModule, asn1_get_time_t_2)
+TEST(HelperModule, asn1_time_get_int64_t_2)
 {
     auto asn1time = ASN1_TIME_new();
     int succ = ASN1_TIME_set_string_X509(asn1time, "19700102212340Z");
     EXPECT_TRUE(succ);
-    time_t res = ASN1_TIME_to_time_t(asn1time);
+    int64_t res = ASN1_TIME_to_int64_t(asn1time);
     EXPECT_EQ(res, 163420);
     ASN1_TIME_free(asn1time);
 }
