@@ -190,7 +190,7 @@ AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, uint64_t pe_len);
  * @param len
  * @return AuthenticodeArray*
  */
-AuthenticodeArray* authenticode_new(const uint8_t* data, long len);
+AuthenticodeArray* authenticode_new(const uint8_t* data, int32_t len);
 
 /**
  * @brief Deallocates AuthenticodeArray and all it's allocated members

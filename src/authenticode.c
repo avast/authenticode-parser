@@ -285,9 +285,9 @@ void initialize_authenticode_parser()
 
 /* Return array of Authenticode signatures stored in the data, there can be multiple
  * of signatures as Authenticode signatures are often nested through unauth attributes */
-AuthenticodeArray* authenticode_new(const uint8_t* data, long len)
+AuthenticodeArray* authenticode_new(const uint8_t* data, int32_t len)
 {
-    if (!data || len == 0)
+    if (!data || len <= 0)
         return NULL;
 
     AuthenticodeArray* result = (AuthenticodeArray*)calloc(1, sizeof(*result));
