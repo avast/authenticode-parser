@@ -444,7 +444,6 @@ CountersignatureImpl* ms_countersig_impl_new(const uint8_t* data, long size)
     const uint8_t* d = data;
     PKCS7* p7 = d2i_PKCS7(NULL, &d, size);
     if (p7) {
-        printf("USES PKCS7\n");
         CountersignatureImpl* result = (CountersignatureImpl*)calloc(1, sizeof(CountersignatureImpl));
         result->type = CS_IMPL_PKCS7;
         result->funcs = &FUNC_ARRAY_NAME_FOR_IMPL(pkcs7);
@@ -455,7 +454,6 @@ CountersignatureImpl* ms_countersig_impl_new(const uint8_t* data, long size)
     d = data;
     CMS_ContentInfo* cms = d2i_CMS_ContentInfo(NULL, &d, size);
     if (cms) {
-        printf("USES CMS\n");
         CountersignatureImpl* result = (CountersignatureImpl*)calloc(1, sizeof(CountersignatureImpl));
         result->type = CS_IMPL_CMS;
         result->funcs = &FUNC_ARRAY_NAME_FOR_IMPL(cms);
