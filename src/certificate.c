@@ -24,8 +24,8 @@ SOFTWARE.
 #include <openssl/asn1.h>
 #include <openssl/crypto.h>
 #include <openssl/evp.h>
-#include <openssl/sha.h>
 #include <openssl/opensslv.h>
+#include <openssl/sha.h>
 #include <openssl/x509.h>
 #include <string.h>
 
