@@ -29,6 +29,7 @@ SOFTWARE.
 #include <openssl/safestack.h>
 #include <openssl/ts.h>
 #include <openssl/x509.h>
+#include <openssl/opensslv.h>
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>

@@ -28,6 +28,7 @@ SOFTWARE.
 #include <openssl/sha.h>
 #include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
+#include <openssl/opensslv.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
