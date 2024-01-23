@@ -21,7 +21,7 @@ if(IS_BIG_ENDIAN)
 endif()
 
 if(MSVC)
-        target_compile_options(authenticode PRIVATE /W4)
+        target_compile_options(authenticode PRIVATE /W4 -fpie)
 else()
         target_compile_options(authenticode PRIVATE -Wall -Wextra -Wpedantic -fpie)
 endif()
@@ -37,7 +37,7 @@ target_include_directories(authenticode
 )
 
 target_link_libraries(authenticode
-        PUBLIC
+        PRIVATE
                 OpenSSL::Crypto
 )
 

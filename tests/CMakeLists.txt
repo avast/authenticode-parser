@@ -1,4 +1,8 @@
-project(tests LANGUAGES C CXX)
+project(test)
+
+set(CMAKE_CXX_STANDARD 11)
+
+find_package(OpenSSL 1.1.1 REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -21,7 +25,8 @@ add_executable(tests
 target_link_libraries(tests 
         PRIVATE 
                 gtest_main
-                authenticode)
+                authenticode
+                OpenSSL::Crypto)
 
 include(GoogleTest)
 gtest_add_tests(TARGET tests)
