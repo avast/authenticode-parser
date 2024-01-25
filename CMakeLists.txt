@@ -4,6 +4,11 @@ project(authenticode_parser VERSION 1.0.0 LANGUAGES C)
 
 find_package(OpenSSL 1.1.1 REQUIRED)
 
+message(STATUS "SSL library is ${OPENSSL_SSL_LIBRARY}")
+message(STATUS "Crypto library is ${OPENSSL_SSL_LIBRARY}")
+message(STATUS "All openssl libraries are ${OPENSSL_SSL_LIBRARY}")
+message(STATUS "OpenSSL version is ${OPENSSL_SSL_LIBRARY}")
+
 include(GNUInstallDirs)
 
 add_library(authenticode STATIC

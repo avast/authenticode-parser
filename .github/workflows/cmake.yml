@@ -30,10 +30,17 @@ jobs:
     
     - name: Install OpenSSL on Windows
       if: matrix.os == 'windows-latest'
-      run: choco install openssl
+      run: |
+        rd -r "C:/Program Files/OpenSSL"
+        choco install openssl
+        Copy-Item -Path "C:/Program Files/OpenSSL/lib/VC/x64/MD/*" -Destination "C:/Program Files/OpenSSL/lib/VC" -Recurse
 
-    - name: Configure CMake
-      if: matrix.os != 'macos-latest'
+    - name: Configure Ubuntu CMake
+      if: matrix.os == 'ubuntu-latest'
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON
+
+    - name: Configure Windows CMake
+      if: matrix.os == 'windows-latest'
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON
 
     - name: Configure MacOS CMake
