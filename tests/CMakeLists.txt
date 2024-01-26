@@ -16,7 +16,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(tests 
-        integration/test.cpp
+        integration/test_microsoft.cpp
+        integration/test_non_microsoft.cpp
         unit/countersignature.cpp
         unit/certificate.cpp
         unit/helper.cpp)
