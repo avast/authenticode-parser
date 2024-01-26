@@ -14,7 +14,7 @@ jobs:
   test-openssl1-1:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [macos-latest, windows-latest]
       # Stops killing other jobs when one fails
       fail-fast: false 
 
@@ -25,19 +25,17 @@ jobs:
     
     - name: Install OpenSSL on MacOS
       if: matrix.os == 'macos-latest'
-      # We want 1.1.1 version max as the 3.0 is default on MacOS otherwise
-      run: brew install openssl@1.1
-    
+      run: |
+        brew uninstall openssl --ignore-dependencies openssl
+        brew install openssl@1.1
+
     - name: Install OpenSSL on Windows
       if: matrix.os == 'windows-latest'
       run: |
         rd -r "C:/Program Files/OpenSSL"
-        choco install openssl
-        Copy-Item -Path "C:/Program Files/OpenSSL/lib/VC/x64/MD/*" -Destination "C:/Program Files/OpenSSL/lib/VC" -Recurse
+        choco install openssl --version=1.1.1.2100
 
-    - name: Configure Ubuntu CMake
-      if: matrix.os == 'ubuntu-latest'
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON
+#        Copy-Item -Path "C:/Program Files/OpenSSL/lib/VC/x64/MD/*" -Destination "C:/Program Files/OpenSSL/lib/VC" -Recurse
 
     - name: Configure Windows CMake
       if: matrix.os == 'windows-latest'
@@ -45,7 +43,7 @@ jobs:
 
     - name: Configure MacOS CMake
       if: matrix.os == 'macos-latest'
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
@@ -54,17 +52,29 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}} -VV
 
-  test-openssl3-0:
-    runs-on: macos-latest
+  test-openssl3:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+      # Stops killing other jobs when one fails
+      fail-fast: false 
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Install OpenSSL on MacOS
+      if: matrix.os == 'macos-latest'
       run: brew install openssl@3
 
     - name: Configure MacOS CMake
+      if: matrix.os == 'macos-latest'
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
+
+    - name: Configure Ubuntu CMake
+      if: matrix.os == 'ubuntu-latest'
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
