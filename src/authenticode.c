@@ -320,7 +320,7 @@ AuthenticodeArray* authenticode_new(const uint8_t* data, int32_t len)
     }
 
     /* We expect SignedData type of PKCS7 */
-    if (!PKCS7_type_is_signed(p7)) {
+    if (!PKCS7_type_is_signed(p7) || !p7->d.sign) {
         auth->verify_flags = AUTHENTICODE_VFY_WRONG_PKCS7_TYPE;
         goto end;
     }

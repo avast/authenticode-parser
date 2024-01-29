@@ -31,6 +31,8 @@ void print_bytes(const ByteArray *bytes)
             printf("%02x", bytes->data[i]);
         }
         puts("");
+    } else {
+        puts("(null)");
     }
 }
 
@@ -68,14 +70,15 @@ void print_authenticode(Authenticode *auth)
     print_bytes(&auth->file_digest);
     printf("%sDigest Algorithm  : %s\n", indent, auth->digest_alg);
     printf("%sVerify flags      : %d\n", indent, auth->verify_flags);
-    printf("%sCertificate count : %ld\n", indent, auth->certs->count);
-    printf("%sCertificates: \n", indent);
     if (auth->signer->program_name) {
         printf("%sProgram name      : %s\n", indent, auth->signer->program_name);
     }
     printf("\n");
 
     if (auth->certs) {
+        printf("%sCertificate count : %ld\n", indent, auth->certs->count);
+        printf("%sCertificates: \n\n", indent);
+
         for (size_t i = 0; i < auth->certs->count; ++i) {
             char *indent = "        ";
 

@@ -260,7 +260,7 @@ TS_TST_INFO* IMPL_FUNC_NAME(get_ts_tst_info, cms)(CountersignatureImpl* impl)
     assert(impl->type == CS_IMPL_CMS);
 
     const ASN1_OBJECT* content_type = CMS_get0_eContentType(impl->cms);
-    if (OBJ_obj2nid(content_type) != NID_id_smime_ct_TSTInfo) {
+    if (!content_type || OBJ_obj2nid(content_type) != NID_id_smime_ct_TSTInfo) {
         return NULL;
     }
 
@@ -450,7 +450,7 @@ CountersignatureImpl* ms_countersig_impl_new(const uint8_t* data, long size)
 {
     const uint8_t* d = data;
     PKCS7* p7 = d2i_PKCS7(NULL, &d, size);
-    if (p7) {
+    if (p7 && PKCS7_type_is_signed(p7) && p7->d.sign) {
         CountersignatureImpl* result =
             (CountersignatureImpl*)calloc(1, sizeof(CountersignatureImpl));
         result->type = CS_IMPL_PKCS7;
