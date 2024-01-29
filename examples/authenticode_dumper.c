@@ -69,7 +69,11 @@ void print_authenticode(Authenticode *auth)
     printf("%sDigest Algorithm  : %s\n", indent, auth->digest_alg);
     printf("%sVerify flags      : %d\n", indent, auth->verify_flags);
     printf("%sCertificate count : %ld\n", indent, auth->certs->count);
-    printf("%sCertificates: \n\n", indent);
+    printf("%sCertificates: \n", indent);
+    if (auth->signer->program_name) {
+        printf("%sProgram name      : %s\n", indent, auth->signer->program_name);
+    }
+    printf("\n");
 
     if (auth->certs) {
         for (size_t i = 0; i < auth->certs->count; ++i) {

@@ -22,6 +22,7 @@ SOFTWARE.
 #include <openssl/asn1.h>
 #include <openssl/evp.h>
 #include <openssl/objects.h>
+#include <openssl/opensslv.h>
 #include <openssl/ossl_typ.h>
 #include <openssl/pkcs7.h>
 #include <openssl/safestack.h>
@@ -274,7 +275,8 @@ static bool authenticode_verify(PKCS7* p7, PKCS7_SIGNER_INFO* si, X509* signCert
 }
 
 /* Creates all the Authenticode objects so we can parse them with OpenSSL, is not thread-safe, needs
- * to be called once before any multi-threading environmentt - https://github.com/openssl/openssl/issues/13524 */
+ * to be called once before any multi-threading environmentt -
+ * https://github.com/openssl/openssl/issues/13524 */
 void initialize_authenticode_parser()
 {
     OBJ_create("1.3.6.1.4.1.311.2.1.12", "spcSpOpusInfo", "SPC_SP_OPUS_INFO_OBJID");
@@ -567,7 +569,8 @@ AuthenticodeArray* parse_authenticode(const uint8_t* pe_data, uint64_t pe_len)
     uint32_t dwLength = letoh32(*(uint32_t*)(pe_data + cert_addr));
     if (pe_len < cert_addr + dwLength)
         return NULL;
-    /* dwLength = offsetof(WIN_CERTIFICATE, bCertificate) + (size of the variable-length binary array contained within bCertificate) */
+    /* dwLength = offsetof(WIN_CERTIFICATE, bCertificate) + (size of the variable-length binary
+     * array contained within bCertificate) */
     AuthenticodeArray* auth_array = authenticode_new(pe_data + cert_addr + 0x8, dwLength - 0x8);
     if (!auth_array)
         return NULL;
