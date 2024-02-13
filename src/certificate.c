@@ -330,6 +330,55 @@ Certificate* certificate_new(X509* x509)
     return result;
 }
 
+void attributes_copy(Attributes* dst, Attributes* src)
+{
+    byte_array_init(&dst->country, src->country.data, src->country.len);
+    byte_array_init(&dst->organization, src->organization.data, src->organization.len);
+    byte_array_init(
+        &dst->organizationalUnit, src->organizationalUnit.data, src->organizationalUnit.len);
+    byte_array_init(&dst->nameQualifier, src->nameQualifier.data, src->nameQualifier.len);
+    byte_array_init(&dst->state, src->state.data, src->state.len);
+    byte_array_init(&dst->commonName, src->commonName.data, src->commonName.len);
+    byte_array_init(&dst->serialNumber, src->serialNumber.data, src->serialNumber.len);
+    byte_array_init(&dst->locality, src->locality.data, src->locality.len);
+    byte_array_init(&dst->title, src->title.data, src->title.len);
+    byte_array_init(&dst->surname, src->surname.data, src->surname.len);
+    byte_array_init(&dst->givenName, src->givenName.data, src->givenName.len);
+    byte_array_init(&dst->initials, src->initials.data, src->initials.len);
+    byte_array_init(&dst->pseudonym, src->pseudonym.data, src->pseudonym.len);
+    byte_array_init(
+        &dst->generationQualifier, src->generationQualifier.data, src->generationQualifier.len);
+    byte_array_init(&dst->emailAddress, src->emailAddress.data, src->emailAddress.len);
+}
+
+/* Creates deep copy of a certificate */
+Certificate* certificate_copy(Certificate* cert)
+{
+    if (!cert)
+        return NULL;
+
+    Certificate* result = (Certificate*)calloc(1, sizeof(*result));
+    if (!result)
+        return NULL;
+
+    result->version = cert->version;
+    result->issuer = strdup(cert->issuer);
+    result->subject = strdup(cert->subject);
+    result->serial = strdup(cert->serial);
+    result->not_after = cert->not_after;
+    result->not_before = cert->not_before;
+    result->sig_alg = strdup(cert->sig_alg);
+    result->sig_alg_oid = strdup(cert->sig_alg_oid);
+    result->key_alg = strdup(cert->key_alg);
+    result->key = strdup(cert->key);
+    byte_array_init(&result->sha1, cert->sha1.data, cert->sha1.len);
+    byte_array_init(&result->sha256, cert->sha256.data, cert->sha256.len);
+    attributes_copy(&result->issuer_attrs, &cert->issuer_attrs);
+    attributes_copy(&result->subject_attrs, &cert->subject_attrs);
+
+    return result;
+}
+
 /* Moves certificates from src to dst, returns 0 on success,
  * else 1. If error occurs, arguments are unchanged */
 int certificate_array_move(CertificateArray* dst, CertificateArray* src)
@@ -350,6 +399,26 @@ int certificate_array_move(CertificateArray* dst, CertificateArray* src)
     free(src->certs);
     src->certs = NULL;
     src->count = 0;
+
+    return 0;
+}
+
+/* Copies certificates from src and appends to dst, returns 0 on success,
+ * else 1. If error occurs, arguments are unchanged */
+int certificate_array_append(CertificateArray* dst, CertificateArray* src)
+{
+    size_t newCount = dst->count + src->count;
+
+    Certificate** tmp = (Certificate**)realloc(dst->certs, newCount * sizeof(Certificate*));
+    if (!tmp)
+        return 1;
+
+    dst->certs = tmp;
+
+    for (size_t i = 0; i < src->count; ++i)
+        dst->certs[i + dst->count] = certificate_copy(src->certs[i]);
+
+    dst->count = newCount;
 
     return 0;
 }
