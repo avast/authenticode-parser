@@ -457,6 +457,9 @@ CountersignatureImpl* ms_countersig_impl_new(const uint8_t* data, long size)
         result->funcs = &FUNC_ARRAY_NAME_FOR_IMPL(pkcs7);
         result->pkcs7 = p7;
         return result;
+    } else if (p7) {
+        PKCS7_free(p7);
+        return NULL;
     }
 
     d = data;
