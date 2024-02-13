@@ -400,6 +400,12 @@ Certificate* certificate_copy(Certificate* cert)
  * else 1. If error occurs, arguments are unchanged */
 int certificate_array_move(CertificateArray* dst, CertificateArray* src)
 {
+    if (!dst || !src)
+        return 1;
+
+    if (!src->certs || !src->count)
+        return 0;
+
     size_t newCount = dst->count + src->count;
 
     Certificate** tmp = (Certificate**)realloc(dst->certs, newCount * sizeof(Certificate*));
@@ -424,6 +430,12 @@ int certificate_array_move(CertificateArray* dst, CertificateArray* src)
  * else 1. If error occurs, arguments are unchanged */
 int certificate_array_append(CertificateArray* dst, CertificateArray* src)
 {
+    if (!dst || !src)
+        return 1;
+
+    if (!src->certs || !src->count)
+        return 0;
+
     size_t newCount = dst->count + src->count;
 
     Certificate** tmp = (Certificate**)realloc(dst->certs, newCount * sizeof(Certificate*));

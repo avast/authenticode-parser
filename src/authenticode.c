@@ -203,8 +203,7 @@ static void parse_ms_countersig(PKCS7* p7, Authenticode* auth)
         countersignature_array_insert(auth->countersigs, csig);
         /* Because MS TimeStamp countersignature has it's own SET of certificates
          * extract it back into parent signature for consistency with PKCS9 */
-        if (csig->certs && csig->certs->count > 0)
-            certificate_array_append(auth->certs, csig->certs);
+        certificate_array_append(auth->certs, csig->certs);
     }
 }
 
