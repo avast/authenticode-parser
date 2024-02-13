@@ -480,48 +480,6 @@ TEST_F(SignatureTest, SecondSignatureContent)
     cert = second_sig->certs->certs[1];
     ASSERT_TRUE(cert->sha1.data);
     ASSERT_EQ(cert->sha1.len, 20);
-    unsigned char third_cert_sha1[20] = {0xa9, 0xa4, 0x12, 0x10, 0x63, 0xd7, 0x1d,
-                                         0x48, 0xe8, 0x52, 0x9a, 0x46, 0x81, 0xde,
-                                         0x80, 0x3e, 0x3e, 0x79, 0x54, 0xb0};
-    EXPECT_TRUE(std::memcmp(third_cert_sha1, cert->sha1.data, 20) == 0);
-
-    ASSERT_TRUE(cert->sha256.data);
-    ASSERT_EQ(cert->sha256.len, 32);
-    unsigned char third_cert_sha256[32] = {0xc4, 0x74, 0xce, 0x76, 0x00, 0x7d, 0x02, 0x39,
-                                           0x4e, 0x0d, 0xa5, 0xe4, 0xde, 0x7c, 0x14, 0xc6,
-                                           0x80, 0xf9, 0xe2, 0x82, 0x01, 0x3c, 0xfe, 0xf6,
-                                           0x53, 0xef, 0x5d, 0xb7, 0x1f, 0xdf, 0x61, 0xf8};
-    EXPECT_TRUE(std::memcmp(third_cert_sha256, cert->sha256.data, 32) == 0);
-
-    EXPECT_EQ(cert->version, 2);
-    EXPECT_STREQ(
-        cert->subject,
-        "/C=US/O=Symantec Corporation/OU=Symantec Trust Network/CN=Symantec SHA256 TimeStamping "
-        "Signer - G3");
-    EXPECT_STREQ(
-        cert->issuer,
-        "/C=US/O=Symantec Corporation/OU=Symantec Trust Network/CN=Symantec SHA256 TimeStamping "
-        "CA");
-    EXPECT_EQ(cert->not_after, 1868918399);
-    EXPECT_EQ(cert->not_before, 1513987200);
-    EXPECT_STREQ(
-        cert->key,
-        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArw6Kqvjcv2l7VBdxRwm9jTyB+"
-        "HQVd2eQnP3eTgKeS3b25TY+ZdUkIG0w+d0dg+k/"
-        "J0ozTm0WiuSNQI0iqr6nCxvSB7Y8tRokKPgbclE9yAmIJgg6+fpDI3VHcAyzX1uPCB1ySFdlTa8CPED39N0yOJM/"
-        "5Sym81kjy4DeE035EMmqChhsVWFX0fECLMS1q/JsI9KfDQ8ZbK2FYmn9ToXBilIxq1vYyXRS41dsIr9Vf2/KBqs/"
-        "SrcidmXs7DbylpWBJiz9u5iqATjTryVAmwlT8ClXhVhe6oVIQSGH5d600yaye0BTWHmOUjEGTZQDRcTOPAPstwDyOi"
-        "LFtG/l77CKmwIDAQAB");
-    EXPECT_STREQ(cert->serial, "7b:d4:e5:af:ba:cc:07:3f:a1:01:23:04:22:41:4d:12");
-    EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
-    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
-    EXPECT_STREQ(cert->key_alg, "rsaEncryption");
-
-    //**************************//
-    // Check the 3. certificate //
-    cert = second_sig->certs->certs[2];
-    ASSERT_TRUE(cert->sha1.data);
-    ASSERT_EQ(cert->sha1.len, 20);
     unsigned char second_cert_sha1[20] = {0x6f, 0xc9, 0xed, 0xb5, 0xe0, 0x0a, 0xb6,
                                           0x41, 0x51, 0xc1, 0xcd, 0xfc, 0xac, 0x74,
                                           0xad, 0x2c, 0x7b, 0x7e, 0x3b, 0xe4};
@@ -555,6 +513,48 @@ TEST_F(SignatureTest, SecondSignatureContent)
         "rySV3J39M2ozP4J9ZM3vpWIasXc9LFL1M7oCZFftYR5NYp4rBkyjyPBMkEbWQ6pPrHM+"
         "dYr77fY5NUdbRE6kvaTyZzjSO67Uw7UNpeGeMWhNwIDAQAB");
     EXPECT_STREQ(cert->serial, "7b:05:b1:d4:49:68:51:44:f7:c9:89:d2:9c:19:9d:12");
+    EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
+    EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
+    EXPECT_STREQ(cert->key_alg, "rsaEncryption");
+
+    //**************************//
+    // Check the 3. certificate //
+    cert = second_sig->certs->certs[2];
+    ASSERT_TRUE(cert->sha1.data);
+    ASSERT_EQ(cert->sha1.len, 20);
+    unsigned char third_cert_sha1[20] = {0xa9, 0xa4, 0x12, 0x10, 0x63, 0xd7, 0x1d,
+                                         0x48, 0xe8, 0x52, 0x9a, 0x46, 0x81, 0xde,
+                                         0x80, 0x3e, 0x3e, 0x79, 0x54, 0xb0};
+    EXPECT_TRUE(std::memcmp(third_cert_sha1, cert->sha1.data, 20) == 0);
+
+    ASSERT_TRUE(cert->sha256.data);
+    ASSERT_EQ(cert->sha256.len, 32);
+    unsigned char third_cert_sha256[32] = {0xc4, 0x74, 0xce, 0x76, 0x00, 0x7d, 0x02, 0x39,
+                                           0x4e, 0x0d, 0xa5, 0xe4, 0xde, 0x7c, 0x14, 0xc6,
+                                           0x80, 0xf9, 0xe2, 0x82, 0x01, 0x3c, 0xfe, 0xf6,
+                                           0x53, 0xef, 0x5d, 0xb7, 0x1f, 0xdf, 0x61, 0xf8};
+    EXPECT_TRUE(std::memcmp(third_cert_sha256, cert->sha256.data, 32) == 0);
+
+    EXPECT_EQ(cert->version, 2);
+    EXPECT_STREQ(
+        cert->subject,
+        "/C=US/O=Symantec Corporation/OU=Symantec Trust Network/CN=Symantec SHA256 TimeStamping "
+        "Signer - G3");
+    EXPECT_STREQ(
+        cert->issuer,
+        "/C=US/O=Symantec Corporation/OU=Symantec Trust Network/CN=Symantec SHA256 TimeStamping "
+        "CA");
+    EXPECT_EQ(cert->not_after, 1868918399);
+    EXPECT_EQ(cert->not_before, 1513987200);
+    EXPECT_STREQ(
+        cert->key,
+        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArw6Kqvjcv2l7VBdxRwm9jTyB+"
+        "HQVd2eQnP3eTgKeS3b25TY+ZdUkIG0w+d0dg+k/"
+        "J0ozTm0WiuSNQI0iqr6nCxvSB7Y8tRokKPgbclE9yAmIJgg6+fpDI3VHcAyzX1uPCB1ySFdlTa8CPED39N0yOJM/"
+        "5Sym81kjy4DeE035EMmqChhsVWFX0fECLMS1q/JsI9KfDQ8ZbK2FYmn9ToXBilIxq1vYyXRS41dsIr9Vf2/KBqs/"
+        "SrcidmXs7DbylpWBJiz9u5iqATjTryVAmwlT8ClXhVhe6oVIQSGH5d600yaye0BTWHmOUjEGTZQDRcTOPAPstwDyOi"
+        "LFtG/l77CKmwIDAQAB");
+    EXPECT_STREQ(cert->serial, "7b:d4:e5:af:ba:cc:07:3f:a1:01:23:04:22:41:4d:12");
     EXPECT_STREQ(cert->sig_alg, "sha256WithRSAEncryption");
     EXPECT_STREQ(cert->sig_alg_oid, "1.2.840.113549.1.1.11");
     EXPECT_STREQ(cert->key_alg, "rsaEncryption");

@@ -351,6 +351,23 @@ void attributes_copy(Attributes* dst, Attributes* src)
     byte_array_init(&dst->emailAddress, src->emailAddress.data, src->emailAddress.len);
 }
 
+/* Parses X509* certs into internal representation and inserts into CertificateArray
+ * Array is assumed to have enough space to hold all certificates storted in the STACK */
+void parse_x509_certificates(const STACK_OF(X509) * certs, CertificateArray* result)
+{
+    int certCount = sk_X509_num(certs);
+    int i = 0;
+    for (; i < certCount; ++i) {
+        Certificate* cert = certificate_new(sk_X509_value(certs, i));
+        if (!cert)
+            break;
+
+        /* Write to the result */
+        result->certs[i] = cert;
+    }
+    result->count = i;
+}
+
 /* Creates deep copy of a certificate */
 Certificate* certificate_copy(Certificate* cert)
 {

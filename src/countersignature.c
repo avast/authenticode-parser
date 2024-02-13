@@ -530,6 +530,16 @@ Countersignature* ms_countersig_new(const uint8_t* data, long size, ASN1_STRING*
     }
 
     STACK_OF(X509)* certs = impl->funcs->get_certs(impl);
+
+    /* MS Counter signatures (PKCS7/CMS) can have extra certificates that are not part of a chain */
+    result->certs = certificate_array_new(sk_X509_num(certs));
+    if (!result->certs) {
+        result->verify_flags = AUTHENTICODE_VFY_INTERNAL_ERROR;
+        goto end;
+    }
+
+    parse_x509_certificates(certs, result->certs);
+
     result->chain = parse_signer_chain(signCert, certs);
 
     /* Imprint == digest */
@@ -645,6 +655,7 @@ void countersignature_free(Countersignature* sig)
         free(sig->digest_alg);
         free(sig->digest.data);
         certificate_array_free(sig->chain);
+        certificate_array_free(sig->certs);
         free(sig);
     }
 }
