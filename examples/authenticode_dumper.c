@@ -173,7 +173,6 @@ int main(int argc, char **argv)
     }
 
     printf("Signature count: %lu\n", auth->count);
-    printf("Signatures: %lu\n", auth->count);
 
     for (size_t i = 0; i < auth->count; ++i)
         print_authenticode(auth->signatures[i]);
